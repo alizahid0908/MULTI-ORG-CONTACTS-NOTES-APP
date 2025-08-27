@@ -29,10 +29,26 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
+        $organizations = null;
+        $currentOrganization = null;
+
+        // Only load organization data for authenticated users
+        if ($user) {
+            $organizations = $user->organizations()->get();
+            $currentOrganization = app(\App\Services\CurrentOrganization::class)->get();
+        }
+
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user,
+            ],
+            'organizations' => $organizations,
+            'currentOrganization' => $currentOrganization,
+            'flash' => [
+                'success' => $request->session()->get('success'),
+                'error' => $request->session()->get('error'),
             ],
         ];
     }
