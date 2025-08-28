@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreContactMetaRequest;
 use App\Models\Contact;
 use App\Models\ContactMeta;
+use App\Services\CurrentOrganizationService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 class ContactMetaController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Store a newly created resource in storage.
      */
@@ -17,13 +19,15 @@ class ContactMetaController extends Controller
     {
         $this->authorize('create', ContactMeta::class);
 
+        $currentOrg = app(CurrentOrganizationService::class)->get();
+        
         // Ensure contact belongs to current organization
-        if ($contact->organization_id !== auth()->user()->organization_id) {
+        if (!$currentOrg || $contact->organization_id !== $currentOrg->id) {
             abort(403, 'Unauthorized access to contact.');
         }
 
         $contact->meta()->create([
-            'organization_id' => auth()->user()->organization_id,
+            'organization_id' => $currentOrg->id,
             'key' => $request->validated('key'),
             'value' => $request->validated('value'),
         ]);
@@ -40,9 +44,12 @@ class ContactMetaController extends Controller
     {
         $this->authorize('delete', $contactMeta);
 
+        $currentOrg = app(CurrentOrganizationService::class)->get();
+
         // Ensure contact and meta belong to current organization
-        if ($contact->organization_id !== auth()->user()->organization_id ||
-            $contactMeta->organization_id !== auth()->user()->organization_id ||
+        if (!$currentOrg || 
+            $contact->organization_id !== $currentOrg->id ||
+            $contactMeta->organization_id !== $currentOrg->id ||
             $contactMeta->contact_id !== $contact->id) {
             abort(403, 'Unauthorized access.');
         }

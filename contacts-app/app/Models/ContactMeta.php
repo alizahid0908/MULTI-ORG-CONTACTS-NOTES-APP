@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ContactMeta extends Model
 {
-    use HasFactory, HasUuids, BelongsToOrganization;
+    use BelongsToOrganization, HasFactory, HasUuids;
 
     protected $fillable = [
         'organization_id',

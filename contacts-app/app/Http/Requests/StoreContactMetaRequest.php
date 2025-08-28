@@ -21,7 +21,7 @@ class StoreContactMetaRequest extends FormRequest
     public function rules(): array
     {
         $contact = $this->route('contact');
-        
+
         return [
             'key' => [
                 'required',
@@ -54,7 +54,7 @@ class StoreContactMetaRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             $contact = $this->route('contact');
-            
+
             // Check if contact already has 5 meta fields
             if ($contact && $contact->meta()->count() >= 5) {
                 $validator->errors()->add('key', 'This contact already has the maximum of 5 custom fields.');

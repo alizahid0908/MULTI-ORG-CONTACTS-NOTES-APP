@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Organization;
-use App\Services\CurrentOrganization;
+use App\Services\CurrentOrganizationService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,10 +16,8 @@ use Inertia\Response;
 
 class OrganizationController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    use AuthorizesRequests;
+
 
     /**
      * List user's organizations.
@@ -27,12 +26,20 @@ class OrganizationController extends Controller
     {
         $user = Auth::user();
         $organizations = $user->organizations()->with('owner')->get();
-        $currentOrg = app(CurrentOrganization::class)->get();
+        $currentOrg = app(CurrentOrganizationService::class)->get();
 
         return Inertia::render('Organizations/Index', [
             'organizations' => $organizations,
-            'currentOrganization' => $currentOrg,
+            'CurrentOrganizationService' => $currentOrg,
         ]);
+    }
+
+    /**
+     * Show the form for creating a new organization.
+     */
+    public function create(): Response
+    {
+        return Inertia::render('Organizations/Create');
     }
 
     /**
@@ -55,7 +62,7 @@ class OrganizationController extends Controller
             $originalSlug = $validated['slug'];
             $counter = 1;
             while (Organization::where('slug', $validated['slug'])->exists()) {
-                $validated['slug'] = $originalSlug . '-' . $counter;
+                $validated['slug'] = $originalSlug.'-'.$counter;
                 $counter++;
             }
         }
@@ -75,9 +82,9 @@ class OrganizationController extends Controller
         $user->assignRole('Admin');
 
         // Set as current organization
-        app(CurrentOrganization::class)->set($organization->id);
+        app(CurrentOrganizationService::class)->set($organization->id);
 
-        return redirect()->route('organizations.index')
+        return redirect()->route('dashboard')
             ->with('success', 'Organization created successfully.');
     }
 
@@ -90,7 +97,7 @@ class OrganizationController extends Controller
             'organization_id' => 'required|string|exists:organizations,id',
         ]);
 
-        $currentOrgService = app(CurrentOrganization::class);
+        $currentOrgService = app(CurrentOrganizationService::class);
 
         if ($currentOrgService->set($validated['organization_id'])) {
             if ($request->expectsJson()) {

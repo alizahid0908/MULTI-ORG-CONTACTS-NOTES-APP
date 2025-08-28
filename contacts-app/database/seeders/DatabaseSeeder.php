@@ -6,10 +6,8 @@ use App\Models\Contact;
 use App\Models\ContactNote;
 use App\Models\Organization;
 use App\Models\User;
-use App\Services\CurrentOrganizationService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -56,22 +54,16 @@ class DatabaseSeeder extends Seeder
         // Assign users to organizations with roles
         $acmeOrg->users()->attach($adminUser->id, ['role' => 'Admin']);
         $acmeOrg->users()->attach($memberUser->id, ['role' => 'Member']);
-        
+
         $techOrg->users()->attach($memberUser->id, ['role' => 'Admin']);
         $techOrg->users()->attach($secondMemberUser->id, ['role' => 'Member']);
 
-        // Assign Spatie roles to users for each organization
-        $adminUser->assignRole('Admin', $acmeOrg);
-        $memberUser->assignRole('Member', $acmeOrg);
-        $memberUser->assignRole('Admin', $techOrg);
-        $secondMemberUser->assignRole('Member', $techOrg);
+        // Assign Spatie roles to users
+        $adminUser->assignRole('Admin');
+        $memberUser->assignRole('Member');
+        $secondMemberUser->assignRole('Member');
 
-        // Set current organization for seeding contacts
-        $currentOrgService = app(CurrentOrganizationService::class);
-        
-        // Seed contacts for Acme Corporation
-        $currentOrgService->set($acmeOrg);
-        
+        // Seed contacts for Acme Corporation (manually set organization_id)
         $johnDoe = Contact::create([
             'first_name' => 'John',
             'last_name' => 'Doe',
@@ -103,8 +95,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Seed contacts for Tech Startup
-        $currentOrgService->set($techOrg);
-        
         $aliceWilson = Contact::create([
             'first_name' => 'Alice',
             'last_name' => 'Wilson',

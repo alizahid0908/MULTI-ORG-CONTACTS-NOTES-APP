@@ -65,19 +65,19 @@ export default function ContactShow() {
     };
 
     const handleDuplicate = () => {
-        router.post(`/contacts/${contact.id}/duplicate`);
+        router.visit(`/contacts/${contact.id}/duplicate`);
     };
 
     return (
         <>
             <Head title={contact.full_name} />
-            
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header */}
                 <div className="mb-6">
                     <div className="flex items-center gap-2 mb-2">
-                        <Link 
-                            href="/contacts" 
+                        <Link
+                            href="/contacts"
                             className="text-gray-600 hover:text-black"
                         >
                             Contacts
@@ -85,14 +85,14 @@ export default function ContactShow() {
                         <span className="text-gray-400">/</span>
                         <span className="text-black">{contact.full_name}</span>
                     </div>
-                    
+
                     <div className="flex justify-between items-start">
                         <h1 className="text-2xl font-bold text-black">{contact.full_name}</h1>
-                        
+
                         <div className="flex gap-2">
                             {can.update && (
                                 <Link href={`/contacts/${contact.id}/edit`}>
-                                    <Button 
+                                    <Button
                                         variant="outline"
                                         className="border-gray-300 text-black hover:bg-gray-100"
                                     >
@@ -100,9 +100,9 @@ export default function ContactShow() {
                                     </Button>
                                 </Link>
                             )}
-                            
+
                             {can.duplicate && (
-                                <Button 
+                                <Button
                                     variant="outline"
                                     onClick={handleDuplicate}
                                     className="border-gray-300 text-black hover:bg-gray-100"
@@ -110,9 +110,9 @@ export default function ContactShow() {
                                     Duplicate
                                 </Button>
                             )}
-                            
+
                             {can.delete && (
-                                <Button 
+                                <Button
                                     variant="outline"
                                     onClick={handleDelete}
                                     className="border-red-300 text-red-600 hover:bg-red-50"
@@ -132,7 +132,7 @@ export default function ContactShow() {
                         </AlertDescription>
                     </Alert>
                 )}
-                
+
                 {flash.error && (
                     <Alert className="mb-6 border-red-300 bg-red-50">
                         <AlertDescription className="text-red-800">
@@ -146,7 +146,7 @@ export default function ContactShow() {
                     <div className="lg:col-span-2">
                         <div className="bg-white border border-gray-300 rounded-lg p-6">
                             <h2 className="text-lg font-semibold text-black mb-4">Contact Information</h2>
-                            
+
                             <div className="flex items-start gap-4 mb-6">
                                 {contact.avatar_url ? (
                                     <img
@@ -161,12 +161,12 @@ export default function ContactShow() {
                                         </span>
                                     </div>
                                 )}
-                                
+
                                 <div className="flex-1">
                                     <h3 className="text-xl font-semibold text-black">{contact.full_name}</h3>
                                     {contact.email && (
                                         <p className="text-gray-600">
-                                            <a 
+                                            <a
                                                 href={`mailto:${contact.email}`}
                                                 className="hover:underline"
                                             >
@@ -176,7 +176,7 @@ export default function ContactShow() {
                                     )}
                                     {contact.phone && (
                                         <p className="text-gray-600">
-                                            <a 
+                                            <a
                                                 href={`tel:${contact.phone}`}
                                                 className="hover:underline"
                                             >
@@ -200,14 +200,14 @@ export default function ContactShow() {
                     {/* Sidebar */}
                     <div className="space-y-6">
                         {/* Custom Fields */}
-                        <ContactMeta 
-                            contact={contact} 
+                        <ContactMeta
+                            contact={contact}
                             canManageMeta={can.manageMeta}
                         />
-                        
+
                         {/* Notes Section */}
-                        <ContactNotes 
-                            contact={contact} 
+                        <ContactNotes
+                            contact={contact}
                             canCreateNotes={can.createNotes}
                         />
                     </div>

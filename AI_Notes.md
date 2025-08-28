@@ -92,7 +92,7 @@
 
 ## Core Services & Architecture
 
-### CurrentOrganization Service
+### CurrentOrganizationService Service
 
 **Prompt:** "Laravel service to manage current organization from session or user's first org."
 
@@ -100,7 +100,7 @@
 - **Decision:** Accepted singleton pattern, session fallback logic, security validation
 - **Reason:** Critical for organization scoping system per DESIGN.md
 
-### SetCurrentOrganization Middleware
+### SetCurrentOrganizationService Middleware
 
 **Prompt:** "Laravel middleware to set current organization from service."
 
@@ -369,7 +369,7 @@ Inertia Middleware Flash Message Updates
 
 ### Middleware Enhancements
 
-- **Output:** Fixed CurrentOrganizationService reference, added error handling, enhanced flash message support
+- **Output:** Fixed CurrentOrganizationServiceService reference, added error handling, enhanced flash message support
 - **Decision:** Accepted robust error handling for organization service and comprehensive message passing
 - **Reason:** Prevents middleware failures and ensures consistent data sharing across all Inertia pages
 

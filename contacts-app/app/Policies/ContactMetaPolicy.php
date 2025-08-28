@@ -4,15 +4,20 @@ namespace App\Policies;
 
 use App\Models\ContactMeta;
 use App\Models\User;
+use App\Services\CurrentOrganizationService;
 
 class ContactMetaPolicy
 {
+    public function __construct(
+        private CurrentOrganizationService $currentOrganizationService
+    ) {}
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole('Admin');
+        $currentOrg = $this->currentOrganizationService->get();
+        return $currentOrg && $user->hasAnyRole(['Admin', 'Member'], $currentOrg);
     }
 
     /**
@@ -20,8 +25,13 @@ class ContactMetaPolicy
      */
     public function view(User $user, ContactMeta $contactMeta): bool
     {
-        return $user->hasRole('Admin') && 
-               $user->organization_id === $contactMeta->organization_id;
+        $currentOrg = $this->currentOrganizationService->get();
+        
+        if (!$currentOrg || $contactMeta->organization_id !== $currentOrg->id) {
+            return false;
+        }
+
+        return $user->hasAnyRole(['Admin', 'Member'], $currentOrg);
     }
 
     /**
@@ -29,7 +39,8 @@ class ContactMetaPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole('Admin');
+        $currentOrg = $this->currentOrganizationService->get();
+        return $currentOrg && $user->hasAnyRole(['Admin', 'Member'], $currentOrg);
     }
 
     /**
@@ -37,8 +48,13 @@ class ContactMetaPolicy
      */
     public function update(User $user, ContactMeta $contactMeta): bool
     {
-        return $user->hasRole('Admin') && 
-               $user->organization_id === $contactMeta->organization_id;
+        $currentOrg = $this->currentOrganizationService->get();
+        
+        if (!$currentOrg || $contactMeta->organization_id !== $currentOrg->id) {
+            return false;
+        }
+
+        return $user->hasAnyRole(['Admin', 'Member'], $currentOrg);
     }
 
     /**
@@ -46,7 +62,12 @@ class ContactMetaPolicy
      */
     public function delete(User $user, ContactMeta $contactMeta): bool
     {
-        return $user->hasRole('Admin') && 
-               $user->organization_id === $contactMeta->organization_id;
+        $currentOrg = $this->currentOrganizationService->get();
+        
+        if (!$currentOrg || $contactMeta->organization_id !== $currentOrg->id) {
+            return false;
+        }
+
+        return $user->hasAnyRole(['Admin', 'Member'], $currentOrg);
     }
 }

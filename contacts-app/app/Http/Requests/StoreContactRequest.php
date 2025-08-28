@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Services\CurrentOrganization;
+use App\Services\CurrentOrganizationService;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreContactRequest extends FormRequest
 {
@@ -23,7 +22,7 @@ class StoreContactRequest extends FormRequest
      */
     public function rules(): array
     {
-        $currentOrg = app(CurrentOrganization::class)->get();
+        $currentOrg = app(CurrentOrganizationService::class)->get();
         $contactId = $this->route('contact') ? $this->route('contact')->id : null;
 
         return [
@@ -33,9 +32,7 @@ class StoreContactRequest extends FormRequest
                 'nullable',
                 'email',
                 'max:255',
-                Rule::unique('contacts', 'email')
-                    ->where('organization_id', $currentOrg?->id)
-                    ->ignore($contactId),
+                // Remove unique validation here - duplicate detection is handled in controller
             ],
             'phone' => 'nullable|string|max:255',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',

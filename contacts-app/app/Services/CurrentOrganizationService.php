@@ -15,7 +15,7 @@ class CurrentOrganizationService
     {
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             return null;
         }
 
@@ -35,6 +35,7 @@ class CurrentOrganizationService
         if ($firstOrg) {
             // Store it in session for future requests
             Session::put('current_org_id', $firstOrg->id);
+
             return $firstOrg;
         }
 
@@ -48,7 +49,7 @@ class CurrentOrganizationService
     {
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 
@@ -57,6 +58,7 @@ class CurrentOrganizationService
 
         if ($organization) {
             Session::put('current_org_id', $orgId);
+
             return true;
         }
 
