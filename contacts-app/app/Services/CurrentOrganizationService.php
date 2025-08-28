@@ -6,7 +6,7 @@ use App\Models\Organization;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
-class CurrentOrganization
+class CurrentOrganizationService
 {
     /**
      * Get the current organization from session or user's first org.
