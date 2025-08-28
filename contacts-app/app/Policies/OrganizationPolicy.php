@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Organization;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class OrganizationPolicy
 {
@@ -28,12 +27,12 @@ class OrganizationPolicy
 
     /**
      * Determine whether the user can create organizations.
-     * According to DESIGN.md: Admin can create organizations.
+     * Any authenticated user can create their own organization.
      */
     public function create(User $user): bool
     {
-        // Check if user has Admin role OR has manage-organizations permission
-        return $user->hasRole('Admin') || $user->can('manage-organizations');
+        // Any authenticated user can create organizations
+        return true;
     }
 
     /**

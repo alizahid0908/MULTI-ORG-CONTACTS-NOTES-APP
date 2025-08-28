@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Contact extends Model
 {
-    use HasUuids, BelongsToOrganization;
+    use BelongsToOrganization, HasUuids;
 
     /**
      * The attributes that are mass assignable.
@@ -32,6 +32,14 @@ class Contact extends Model
     protected $casts = [
         'id' => 'string',
         'organization_id' => 'string',
+    ];
+
+    /**
+     * The accessors to append to the model's array form.
+     */
+    protected $appends = [
+        'full_name',
+        'avatar_url',
     ];
 
     /**
@@ -93,7 +101,7 @@ class Contact extends Model
      */
     public function getFullNameAttribute(): string
     {
-        return trim($this->first_name . ' ' . $this->last_name);
+        return trim($this->first_name.' '.$this->last_name);
     }
 
     /**
@@ -101,7 +109,7 @@ class Contact extends Model
      */
     public function getAvatarUrlAttribute(): ?string
     {
-        return $this->avatar_path ? asset('storage/' . $this->avatar_path) : null;
+        return $this->avatar_path ? asset('storage/'.$this->avatar_path) : null;
     }
 
     /**
@@ -112,8 +120,8 @@ class Contact extends Model
         if ($search) {
             return $query->where(function ($q) use ($search) {
                 $q->where('first_name', 'like', "%{$search}%")
-                  ->orWhere('last_name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
 

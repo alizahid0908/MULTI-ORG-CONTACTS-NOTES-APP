@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Contact;
-use App\Services\CurrentOrganization;
+use App\Services\CurrentOrganizationService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -17,7 +17,7 @@ class UpdateContactRequest extends FormRequest
         // Check if user can update this specific contact
         $contact = $this->route('contact');
 
-        if (!$contact instanceof Contact) {
+        if (! $contact instanceof Contact) {
             return false;
         }
 
@@ -31,7 +31,7 @@ class UpdateContactRequest extends FormRequest
      */
     public function rules(): array
     {
-        $currentOrg = app(CurrentOrganization::class)->get();
+        $currentOrg = app(CurrentOrganizationService::class)->get();
         $contact = $this->route('contact');
 
         return [
@@ -123,8 +123,14 @@ class UpdateContactRequest extends FormRequest
             $validated['avatar_path'] = null;
         }
 
-        return array_filter($validated, function ($value) {
-            return $value !== null;
-        });
+        // Only return fields that were actually submitted in the request
+        $submittedFields = [];
+        foreach ($validated as $key => $value) {
+            if ($this->has($key)) {
+                $submittedFields[$key] = $value;
+            }
+        }
+
+        return $submittedFields;
     }
 }

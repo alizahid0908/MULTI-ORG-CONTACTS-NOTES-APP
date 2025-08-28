@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('key', 100);
             $table->text('value');
             $table->timestamps();
-            
+
             // Ensure unique key per contact
             $table->unique(['contact_id', 'key']);
             $table->index(['contact_id']);

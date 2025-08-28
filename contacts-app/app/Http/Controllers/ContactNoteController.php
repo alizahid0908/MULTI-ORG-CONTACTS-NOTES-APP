@@ -6,11 +6,12 @@ use App\Http\Requests\StoreContactNoteRequest;
 use App\Models\Contact;
 use App\Models\ContactNote;
 use App\Services\CurrentOrganizationService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 class ContactNoteController extends Controller
 {
+    use AuthorizesRequests;
     public function __construct(
         private CurrentOrganizationService $currentOrganizationService
     ) {}

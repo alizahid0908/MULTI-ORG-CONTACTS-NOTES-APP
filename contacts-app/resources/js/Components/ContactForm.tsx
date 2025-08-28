@@ -1,9 +1,10 @@
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import PrimaryButton from '@/Components/PrimaryButton';
+import SecondaryButton from '@/Components/SecondaryButton';
+import TextInput from '@/Components/TextInput';
+import InputLabel from '@/Components/InputLabel';
+import InputError from '@/Components/InputError';
 
 interface Contact {
     id?: string;
@@ -15,19 +16,30 @@ interface Contact {
     avatar_url: string | null;
 }
 
+interface InitialData {
+    first_name?: string;
+    last_name?: string;
+    email?: string | null;
+    phone?: string | null;
+}
+
 interface ContactFormProps {
     contact?: Contact;
+    initialData?: InitialData;
     onSuccess?: () => void;
 }
 
-export default function ContactForm({ contact, onSuccess }: ContactFormProps) {
+export default function ContactForm({ contact, initialData, onSuccess }: ContactFormProps) {
     const isEditing = !!contact;
     
+    // Use initialData for duplication, contact for editing, or empty for new
+    const formData = initialData || contact || {};
+    
     const { data, setData, post, put, processing, errors, reset } = useForm({
-        first_name: contact?.first_name || '',
-        last_name: contact?.last_name || '',
-        email: contact?.email || '',
-        phone: contact?.phone || '',
+        first_name: formData.first_name || '',
+        last_name: formData.last_name || '',
+        email: formData.email || '',
+        phone: formData.phone || '',
         avatar: null as File | null,
         remove_avatar: false,
     });
@@ -35,16 +47,9 @@ export default function ContactForm({ contact, onSuccess }: ContactFormProps) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        formData.append('first_name', data.first_name);
-        formData.append('last_name', data.last_name);
-        if (data.email) formData.append('email', data.email);
-        if (data.phone) formData.append('phone', data.phone);
-        if (data.avatar) formData.append('avatar', data.avatar);
-        if (isEditing && data.remove_avatar) formData.append('remove_avatar', '1');
+        console.log('Form data before submission:', data);
 
         const options = {
-            forceFormData: true,
             onSuccess: () => {
                 if (!isEditing) {
                     reset();
@@ -52,8 +57,6 @@ export default function ContactForm({ contact, onSuccess }: ContactFormProps) {
                 onSuccess?.();
             },
             onError: (errors: any) => {
-                // The backend handles duplicate detection and redirects automatically
-                // for web requests, so we don't need special handling here
                 console.log('Form submission errors:', errors);
             },
         };
@@ -67,6 +70,7 @@ export default function ContactForm({ contact, onSuccess }: ContactFormProps) {
 
     const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
+        console.log('Avatar file selected:', file);
         setData('avatar', file);
         if (file) {
             setData('remove_avatar', false);
@@ -85,79 +89,61 @@ export default function ContactForm({ contact, onSuccess }: ContactFormProps) {
         <form onSubmit={submit} className="space-y-6 max-w-md">
             {/* First Name */}
             <div>
-                <Label htmlFor="first_name" className="text-black">
-                    First Name *
-                </Label>
-                <Input
+                <InputLabel htmlFor="first_name" value="First Name *" />
+                <TextInput
                     id="first_name"
                     type="text"
                     value={data.first_name}
                     onChange={(e) => setData('first_name', e.target.value)}
-                    className="mt-1 border-gray-300 text-black"
+                    className="mt-1 block w-full"
                     required
                 />
-                {errors.first_name && (
-                    <p className="mt-1 text-sm text-red-600">{errors.first_name}</p>
-                )}
+                <InputError message={errors.first_name} className="mt-2" />
             </div>
 
             {/* Last Name */}
             <div>
-                <Label htmlFor="last_name" className="text-black">
-                    Last Name *
-                </Label>
-                <Input
+                <InputLabel htmlFor="last_name" value="Last Name *" />
+                <TextInput
                     id="last_name"
                     type="text"
                     value={data.last_name}
                     onChange={(e) => setData('last_name', e.target.value)}
-                    className="mt-1 border-gray-300 text-black"
+                    className="mt-1 block w-full"
                     required
                 />
-                {errors.last_name && (
-                    <p className="mt-1 text-sm text-red-600">{errors.last_name}</p>
-                )}
+                <InputError message={errors.last_name} className="mt-2" />
             </div>
 
             {/* Email */}
             <div>
-                <Label htmlFor="email" className="text-black">
-                    Email
-                </Label>
-                <Input
+                <InputLabel htmlFor="email" value="Email" />
+                <TextInput
                     id="email"
                     type="email"
                     value={data.email}
                     onChange={(e) => setData('email', e.target.value)}
-                    className="mt-1 border-gray-300 text-black"
+                    className="mt-1 block w-full"
                 />
-                {errors.email && (
-                    <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-                )}
+                <InputError message={errors.email} className="mt-2" />
             </div>
 
             {/* Phone */}
             <div>
-                <Label htmlFor="phone" className="text-black">
-                    Phone
-                </Label>
-                <Input
+                <InputLabel htmlFor="phone" value="Phone" />
+                <TextInput
                     id="phone"
                     type="tel"
                     value={data.phone}
                     onChange={(e) => setData('phone', e.target.value)}
-                    className="mt-1 border-gray-300 text-black"
+                    className="mt-1 block w-full"
                 />
-                {errors.phone && (
-                    <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
-                )}
+                <InputError message={errors.phone} className="mt-2" />
             </div>
 
             {/* Avatar */}
             <div>
-                <Label htmlFor="avatar" className="text-black">
-                    Avatar
-                </Label>
+                <InputLabel htmlFor="avatar" value="Avatar" />
                 
                 {/* Current Avatar Display */}
                 {isEditing && contact?.avatar_url && !data.remove_avatar && (
@@ -167,30 +153,26 @@ export default function ContactForm({ contact, onSuccess }: ContactFormProps) {
                             alt="Current avatar"
                             className="w-16 h-16 rounded-full object-cover border border-gray-300"
                         />
-                        <Button
+                        <SecondaryButton
                             type="button"
-                            variant="outline"
-                            size="sm"
                             onClick={removeAvatar}
-                            className="mt-2 border-gray-300 text-black hover:bg-gray-100"
+                            className="mt-2"
                         >
                             Remove Avatar
-                        </Button>
+                        </SecondaryButton>
                     </div>
                 )}
 
                 {/* File Input */}
-                <Input
+                <input
                     id="avatar"
                     type="file"
                     accept="image/jpeg,image/png,image/jpg,image/gif"
                     onChange={handleAvatarChange}
-                    className="mt-1 border-gray-300 text-black"
+                    className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
                 />
                 
-                {errors.avatar && (
-                    <p className="mt-1 text-sm text-red-600">{errors.avatar}</p>
-                )}
+                <InputError message={errors.avatar} className="mt-2" />
                 
                 <p className="mt-1 text-sm text-gray-500">
                     JPEG, PNG, JPG or GIF. Max 2MB.
@@ -199,22 +181,19 @@ export default function ContactForm({ contact, onSuccess }: ContactFormProps) {
 
             {/* Submit Button */}
             <div className="flex gap-2">
-                <Button
+                <PrimaryButton
                     type="submit"
                     disabled={processing}
-                    className="bg-black text-white hover:bg-gray-800 disabled:bg-gray-400"
                 >
                     {processing ? 'Saving...' : (isEditing ? 'Update Contact' : 'Create Contact')}
-                </Button>
+                </PrimaryButton>
                 
-                <Button
+                <SecondaryButton
                     type="button"
-                    variant="outline"
                     onClick={() => window.history.back()}
-                    className="border-gray-300 text-black hover:bg-gray-100"
                 >
                     Cancel
-                </Button>
+                </SecondaryButton>
             </div>
         </form>
     );

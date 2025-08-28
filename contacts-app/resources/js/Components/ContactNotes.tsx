@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { router, usePage } from '@inertiajs/react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/Components/ui/button';
+import { Textarea } from '@/Components/ui/textarea';
 
 interface User {
     id: string;

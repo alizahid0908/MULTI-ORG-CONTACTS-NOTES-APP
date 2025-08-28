@@ -65,22 +65,22 @@ All routes except /healthz are under auth and set-current-organization middlewar
 
 ## Scoping
 
-### CurrentOrganization Service:
+### CurrentOrganizationService Service:
 
-Singleton, accessible via app(CurrentOrganization::class).
+Singleton, accessible via app(CurrentOrganizationService::class).
 get(): Retrieves org_id from session (current_org_id) or user's first org (via pivot).
 set($orgId): Stores org_id in session if user belongs to org.
 
-### SetCurrentOrganization Middleware:
+### SetCurrentOrganizationService Middleware:
 
 Runs on all routes (except /healthz).
-Calls CurrentOrganization::set() with org_id from request or session; falls back to user's first org.
+Calls CurrentOrganizationService::set() with org_id from request or session; falls back to user's first org.
 Throws 403 if user has no orgs.
 
 ### BelongsToOrganization Trait:
 
 Used by Contact, ContactNote, ContactMeta.
-Global scope: where('organization_id', app(CurrentOrganization::class)->get()->id).
+Global scope: where('organization_id', app(CurrentOrganizationService::class)->get()->id).
 On create: Sets organization_id to current org's ID.
 Ensures no cross-org data access (critical to avoid hard fail).
 

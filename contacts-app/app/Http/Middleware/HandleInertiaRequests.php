@@ -24,7 +24,7 @@ class HandleInertiaRequests extends Middleware
 
     /**
      * Define the props that are shared by default.
-     * 
+     *
      * Shares authentication data, organization context, and flash messages
      * with all Inertia.js pages for consistent state management.
      *
@@ -34,17 +34,17 @@ class HandleInertiaRequests extends Middleware
     {
         $user = $request->user();
         $organizations = null;
-        $currentOrganization = null;
+        $CurrentOrganizationService = null;
 
         // Only load organization data for authenticated users
         if ($user) {
             $organizations = $user->organizations()->get();
-            
+
             try {
-                $currentOrganization = app(\App\Services\CurrentOrganizationService::class)->get();
+                $CurrentOrganizationService = app(\App\Services\CurrentOrganizationService::class)->get();
             } catch (\Exception $e) {
                 // Handle case where user has no organizations or service fails
-                $currentOrganization = null;
+                $CurrentOrganizationService = null;
             }
         }
 
@@ -54,7 +54,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $user,
             ],
             'organizations' => $organizations,
-            'currentOrganization' => $currentOrganization,
+            'CurrentOrganizationService' => $CurrentOrganizationService,
             'flash' => [
                 'success' => $request->session()->get('success'),
                 'error' => $request->session()->get('error'),

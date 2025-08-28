@@ -18,7 +18,7 @@ class ContactNotePolicy
     public function viewAny(User $user): bool
     {
         $currentOrg = $this->currentOrganizationService->get();
-        
+
         return $currentOrg && $user->hasAnyRole(['Admin', 'Member'], $currentOrg);
     }
 
@@ -28,8 +28,8 @@ class ContactNotePolicy
     public function view(User $user, ContactNote $contactNote): bool
     {
         $currentOrg = $this->currentOrganizationService->get();
-        
-        if (!$currentOrg || $contactNote->organization_id !== $currentOrg->id) {
+
+        if (! $currentOrg || $contactNote->organization_id !== $currentOrg->id) {
             return false;
         }
 
@@ -43,7 +43,7 @@ class ContactNotePolicy
     public function create(User $user): bool
     {
         $currentOrg = $this->currentOrganizationService->get();
-        
+
         return $currentOrg && $user->hasAnyRole(['Admin', 'Member'], $currentOrg);
     }
 
@@ -53,8 +53,8 @@ class ContactNotePolicy
     public function update(User $user, ContactNote $contactNote): bool
     {
         $currentOrg = $this->currentOrganizationService->get();
-        
-        if (!$currentOrg || $contactNote->organization_id !== $currentOrg->id) {
+
+        if (! $currentOrg || $contactNote->organization_id !== $currentOrg->id) {
             return false;
         }
 
@@ -68,8 +68,8 @@ class ContactNotePolicy
     public function delete(User $user, ContactNote $contactNote): bool
     {
         $currentOrg = $this->currentOrganizationService->get();
-        
-        if (!$currentOrg || $contactNote->organization_id !== $currentOrg->id) {
+
+        if (! $currentOrg || $contactNote->organization_id !== $currentOrg->id) {
             return false;
         }
 

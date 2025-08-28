@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use App\Services\CurrentOrganization;
+use App\Services\CurrentOrganizationService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,8 +15,8 @@ trait BelongsToOrganization
     {
         // Add global scope to filter by current organization
         static::addGlobalScope('organization', function (Builder $builder) {
-            $currentOrg = app(CurrentOrganization::class)->get();
-            
+            $currentOrg = app(CurrentOrganizationService::class)->get();
+
             if ($currentOrg) {
                 $builder->where('organization_id', $currentOrg->id);
             }
@@ -24,9 +24,9 @@ trait BelongsToOrganization
 
         // Automatically set organization_id when creating new models
         static::creating(function (Model $model) {
-            if (!$model->organization_id) {
-                $currentOrg = app(CurrentOrganization::class)->get();
-                
+            if (! $model->organization_id) {
+                $currentOrg = app(CurrentOrganizationService::class)->get();
+
                 if ($currentOrg) {
                     $model->organization_id = $currentOrg->id;
                 }

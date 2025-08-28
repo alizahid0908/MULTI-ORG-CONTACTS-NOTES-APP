@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ContactNote extends Model
 {
-    use HasUuids, BelongsToOrganization;
+    use BelongsToOrganization, HasUuids;
 
     protected $fillable = [
         'organization_id',

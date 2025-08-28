@@ -4,8 +4,7 @@ namespace App\Policies;
 
 use App\Models\Contact;
 use App\Models\User;
-use App\Services\CurrentOrganization;
-use Illuminate\Auth\Access\Response;
+use App\Services\CurrentOrganizationService;
 
 class ContactPolicy
 {
@@ -29,7 +28,7 @@ class ContactPolicy
     public function view(User $user, Contact $contact): bool
     {
         // Check if contact belongs to user's current organization
-        if (!$this->belongsToCurrentOrganization($contact)) {
+        if (! $this->belongsToCurrentOrganizationService($contact)) {
             return false;
         }
 
@@ -56,7 +55,7 @@ class ContactPolicy
     public function update(User $user, Contact $contact): bool
     {
         // Check if contact belongs to user's current organization
-        if (!$this->belongsToCurrentOrganization($contact)) {
+        if (! $this->belongsToCurrentOrganizationService($contact)) {
             return false;
         }
 
@@ -70,7 +69,7 @@ class ContactPolicy
     public function delete(User $user, Contact $contact): bool
     {
         // Check if contact belongs to user's current organization
-        if (!$this->belongsToCurrentOrganization($contact)) {
+        if (! $this->belongsToCurrentOrganizationService($contact)) {
             return false;
         }
 
@@ -84,7 +83,7 @@ class ContactPolicy
     public function duplicate(User $user, Contact $contact): bool
     {
         // Check if contact belongs to user's current organization
-        if (!$this->belongsToCurrentOrganization($contact)) {
+        if (! $this->belongsToCurrentOrganizationService($contact)) {
             return false;
         }
 
@@ -116,11 +115,11 @@ class ContactPolicy
      * Helper method to check if contact belongs to current organization.
      * This provides an extra layer of security beyond the global scope.
      */
-    private function belongsToCurrentOrganization(Contact $contact): bool
+    private function belongsToCurrentOrganizationService(Contact $contact): bool
     {
-        $currentOrg = app(CurrentOrganization::class)->get();
+        $currentOrg = app(CurrentOrganizationService::class)->get();
 
-        if (!$currentOrg) {
+        if (! $currentOrg) {
             return false;
         }
 
