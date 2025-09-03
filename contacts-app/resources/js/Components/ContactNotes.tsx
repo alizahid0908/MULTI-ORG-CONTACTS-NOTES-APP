@@ -187,7 +187,7 @@ export default function ContactNotes({ contact, canCreateNotes = true }: Contact
                                                     onClick={() => handleDeleteNote(note.id)}
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="text-red-600 hover:text-red-800 h-6 px-2"
+                                                    className="text-gray-600 hover:text-black h-6 px-2"
                                                 >
                                                     Delete
                                                 </Button>

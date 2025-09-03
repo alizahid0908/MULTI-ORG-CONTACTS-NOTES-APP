@@ -49,25 +49,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/contacts/{contact}', [ContactController::class, 'destroy'])->name('contacts.destroy');
     Route::get('/contacts/{contact}/duplicate', [ContactController::class, 'duplicate'])->name('contacts.duplicate');
 
-    // Debug route
-    Route::get('/debug/contacts', function () {
-        $user = auth()->user();
-        $currentOrg = app(\App\Services\CurrentOrganizationService::class)->get();
-        $contacts = \App\Models\Contact::withoutGlobalScope('organization')->get();
-        
-        return response()->json([
-            'user' => $user->name,
-            'current_org' => $currentOrg ? $currentOrg->name : 'None',
-            'current_org_id' => $currentOrg ? $currentOrg->id : 'None',
-            'total_contacts' => $contacts->count(),
-            'contacts_in_current_org' => $currentOrg ? \App\Models\Contact::where('organization_id', $currentOrg->id)->count() : 0,
-            'sample_contacts' => $contacts->take(3)->map(fn($c) => [
-                'id' => $c->id,
-                'name' => $c->full_name,
-                'org_id' => $c->organization_id
-            ])
-        ]);
-    });
 
     // Contact Notes routes
     Route::get('/contacts/{contact}/notes', [ContactNoteController::class, 'index'])->name('contact-notes.index');

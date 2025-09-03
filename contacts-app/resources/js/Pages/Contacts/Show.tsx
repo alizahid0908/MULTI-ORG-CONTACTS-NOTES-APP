@@ -115,7 +115,7 @@ export default function ContactShow() {
                                 <Button
                                     variant="outline"
                                     onClick={handleDelete}
-                                    className="border-red-300 text-red-600 hover:bg-red-50"
+                                    className="border-gray-300 text-black hover:bg-gray-100"
                                 >
                                     Delete
                                 </Button>

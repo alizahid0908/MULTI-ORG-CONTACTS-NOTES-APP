@@ -97,7 +97,7 @@ class ContactController extends Controller
      */
     public function store(StoreContactRequest $request): JsonResponse|RedirectResponse
     {
-        // Skip authorization for testing - would normally check: $this->authorize('create', Contact::class);
+        $this->authorize('create', Contact::class);
 
         $currentOrg = app(CurrentOrganizationService::class)->get();
 

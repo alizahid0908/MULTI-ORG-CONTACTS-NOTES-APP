@@ -45,7 +45,7 @@ export default function OrgSwitcher({
             <div className={`text-sm text-gray-500 ${className}`}>
                 <button
                     onClick={handleCreateNew}
-                    className="text-blue-600 hover:text-blue-800 underline"
+                    className="text-black hover:text-gray-700 underline"
                 >
                     Create your first organization
                 </button>
@@ -106,7 +106,7 @@ export default function OrgSwitcher({
                                 </div>
                                 {CurrentOrganizationService?.id === org.id && (
                                     <svg
-                                        className="ml-auto h-4 w-4 text-green-600"
+                                        className="ml-auto h-4 w-4 text-black"
                                         fill="currentColor"
                                         viewBox="0 0 20 20"
                                     >
@@ -124,7 +124,7 @@ export default function OrgSwitcher({
                     <div className="border-t border-gray-100">
                         <button
                             onClick={handleCreateNew}
-                            className="block w-full px-4 py-2 text-left text-sm text-blue-600 hover:bg-blue-50 hover:text-blue-800"
+                            className="block w-full px-4 py-2 text-left text-sm text-black hover:bg-gray-50 hover:text-gray-900"
                         >
                             <div className="flex items-center">
                                 <svg

@@ -91,16 +91,16 @@ export default function ContactsIndex() {
 
                 {/* Flash Messages */}
                 {flash.success && (
-                    <Alert className="mb-6 border-green-300 bg-green-50">
-                        <AlertDescription className="text-green-800">
+                    <Alert className="mb-6 border-gray-300 bg-gray-50">
+                        <AlertDescription className="text-gray-800">
                             {flash.success}
                         </AlertDescription>
                     </Alert>
                 )}
                 
                 {flash.error && (
-                    <Alert className="mb-6 border-red-300 bg-red-50">
-                        <AlertDescription className="text-red-800">
+                    <Alert className="mb-6 border-gray-300 bg-gray-100">
+                        <AlertDescription className="text-gray-800">
                             {flash.error}
                         </AlertDescription>
                     </Alert>
